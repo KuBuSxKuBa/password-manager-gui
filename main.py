@@ -8,12 +8,20 @@ def format_data():
     if len(website) == 0 or len(password) == 0:
         messagebox.showerror(title="Warning!", message="Dont leave blank fields!")
     else:
-        is_ok = messagebox.askokcancel(title=website, message=f"These are the details entered:\nEmail:{email} \nPassword:{password} \nIs it okay to save?")
-        if is_ok:
-            with open("data.txt" , "a") as file:
-                file.write(f"Website: {website}, Email/Username: {email}, Password: {password}\n")
-                website_entry.delete(0, END)
-                password_entry.delete(0, END)
+        try:
+            with open("data.json" , "r") as file:
+                data = json.load(file)
+
+        except FileNotFoundError:
+            with open("data.json", "w") as file:
+                json.dump(new_data, file, indent=4)
+        else:
+            data.update(new_data)
+            with open("data.json", "w") as file:
+                json.dump(new_data, file, indent=4)
+        finally:
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
 
 def insert_random_password():
     password_entry.delete(0, END)
